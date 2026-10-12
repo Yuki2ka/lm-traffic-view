@@ -1,0 +1,163 @@
+lm studio works on http://127.0.0.1:1235
+
+to debug agents tool calls i want see that some agent sent (typically json) and lmstudio something answer.
+
+
+agent connect to http://127.0.0.1:1234 
+proxy app show stream of messages from agent and from studio. and shot it as formatted chat with ability to collapse all text message blocks to see only command names, itc
+
+fast work with very big and fast stream
+
+
+
+
+add checkbox that hide 0 byte messages (add css class empty and toggle visibility of all together without multiple page redraw)
+
+
+
+
+live update web page in case i edit index.htm
+proxy.py
+: add a tiny /ui-mtime endpoint that returns the file's modification time
+
+index.html
+: poll it every 2 seconds, reload on change
+
+
+improve install and run script: i want single script that install in current dir only if need.
+
+
+
+can i detect if lm-studio running an what port it use?
+
+make possible to detect what services available and choose
+
+
+use hh:mm:ss without am pm	toLocaleTimeString("en-GB", { hour12: false });
+
+
+
+
+add btn to modal div to choose server. when div opened - do fast check ports for working servers
+Name,Port,Endpoint, download page
+
+
+const SERVERS = [
+	[ "Jan.ai", 1337, "v1/models", "https://github.com/janhq/jan/releases"],
+	[ "LM Studio", 1234, "v1/chat/completions", "https://lmstudio.ai/download"],
+	[ "llama.cpp", 8080, "v1/chat/completions", "https://github.com/ggerganov/llama.cpp/releases"],
+	[ "ik_llama.cpp", 8080, "v1/chat/completions", "https://github.com/ikawrakow/ik_llama.cpp/releases"],
+	[ "KoboldCPP", 5001, "api/v1/generate", 
+    "https://github.com/LostRuins/koboldcpp/releases"],
+	[ "Ollama", 11434, "api/tags", "https://ollama.com/download/"],
+	[ "vLLM", 8000, "v1/chat/completions", "https://docs.vllm.ai/en/latest/getting_started/installation.html"],
+	[ "LocalAI", 8080, "v1/models", "https://github.com/mudler/LocalAI/releases"],
+	[ "Text Generation WebUI", 7860, "v1/chat/completions", "https://github.com/oobabooga/text-generation-webui/releases"],
+];
+
+at start of app if (any working found) choose some
+at open this window, no working model selected - chose working
+
+
+i am not sure this list is up to date
+
+
+need to improve port select and startup.
+give 3 possible options to user:
+* keep in out ports same and use transparent bridge (should works under linux and windows)
+* keep in port as in list and change out port. (example: automatically detected server 127.0.0.1:1234 then possible to use 127.0.0.1:1235 or transparent bridge )
+* change in port and keep out port as in list. (example: user change port in lmstudio, we automatically detected it as server 127.0.0.1:1235 then we use 127.0.0.1:1234 as in list)
+
+
+
+what you done not correspond to detected ports. i told you again:
+if detected addr:port same as list (eg 127.0.0.1:1234) - then we have only 2 options: 
+	* keep addr:port same in and out (eg 127.0.0.1:1234) and use transparent bridge
+	* suggest user to change agent settings to connect to next port, e.g. 1235
+if detected addr:port not same as list (eg 127.0.0.1:1235) - then we assume user already change server port (eg to 127.0.0.1:1235) and keep agent connect to default port (eg 127.0.0.1:1234)
+	* in this case we just start proxy as base version of this script
+
+Scan all ports
+      │
+      ├─ Server found on STANDARD port (e.g. LM Studio on :1234)
+      │     │
+      │     ├─ ① Transparent bridge  →  Agent:1234 ──▶ [intercept] ──▶ :1234 ──▶ Server
+      │     │     (needs admin/root)
+      │     │
+      │     └─ ② Use port :1235       →  Agent:1235 ──▶ [proxy] ──▶ :1234 ──▶ Server
+      │           (recommended, no admin)
+      │
+      └─ Server found on NON-STANDARD port (e.g. LM Studio on :1235)
+            │
+            └─ Auto passthrough      →  Agent:1234 ──▶ [proxy] ──▶ :1235 ──▶ Server
+                  (just works, agent keeps default config)
+
+bug i set in lm studio 127.0.0.1:1235 and it give me choices Agent:1235 ──▶ [proxy] ──▶ :1234
+
+bug i set in lm studio 127.0.0.1:1234 and i cant even see that menu because at startup
+
+[Errno 10048] error while attempting to bind on address ('127.0.0.1', 1234): only one usage of each socket address (protocol/network address/port) is normally permitted 
+
+
+bug i set in lm studio 127.0.0.1:1235
+
+←[32mINFO←[0m:     Started server process [←[36m5908←[0m]                                                               ←[32mINFO←[0m:     Waiting for application startup.                                                                     ←[32mINFO←[0m:     Application startup complete.                                                                        ←[32mINFO←[0m:     Uvicorn running on ←[1mhttp://127.0.0.1:19999←[0m (Press CTRL+C to quit)                             ←[32mINFO←[0m:     127.0.0.1:51388 - "←[1mGET /_ui-mtime HTTP/1.1←[0m" ←[32m200 OK←[0m                                  ←[32mINFO←[0m:     127.0.0.1:51382 - "WebSocket /_ws" [accepted]                                                        ←[32mINFO←[0m:     connection open                                                                                      ←[32mINFO←[0m:     127.0.0.1:51388 - "←[1mGET /_ui-mtime HTTP/1.1←[0m" ←[32m200 OK←[0m                                  ←[32mINFO←[0m:     127.0.0.1:51388 - "←[1mGET /_ui-mtime HTTP/1.1←[0m" ←[32m200 OK←[0m 
+
+menu show
+No servers detected. Start a server and reload.
+
+i told you again
+what you done not correspond to detected ports.
+if detected addr:port same as list (eg 127.0.0.1:1234) - then we have only 2 options: 
+	* keep addr:port same in and out (eg 127.0.0.1:1234) and use transparent bridge
+	* suggest user to change agent settings to connect to next port, e.g. 1235
+if detected addr:port not same as list (eg 127.0.0.1:1235) - then we assume user already change server port (eg to 127.0.0.1:1235) and keep agent connect to default port (eg 127.0.0.1:1234)
+	* in this case we just start proxy as base version of this script
+
+
+
+if found one from list then we need
+
+check also next port eg  not only 1234 but 1235
+and input port manually
+
+
+is possible to have in and out port same to not change server settings?
+
+is possible to have in and out port same to not change any settings in servers and agents?
+
+
+transparent bridge
+kernel-level packet redirection (WinDivert).
+
+
+pydivert	Python binding for WinDivert	Yes, but bundled in wheel
+mitmproxy-windows	Uses vendored WinDivert + Rust exe	Yes
+
+https://github.com/basil00/WinDivert
+
+
+add toggle button new event on top . true by default
+
+auto-scroll make false by default.
+
+improve visual difference of toggle state of buttons
+
+clear button make some  reddish color
+
+
+group
+add ability to fold groups of sequential events by same type:
+same role or for example if agent write delta content , then i dont want to see 1000 events with few letters in that chunk but croup it and fold by default
+
+	"content +3c", "content +5c", "content +12c" → all normalize to "content" → one group
+	"reasoning +100c", "reasoning +50c" → "reasoning" → one group
+	"tool_call func()", "tool_call other()" → stay separate (different names)
+	Requests, errors, [DONE] → ungrouped (unique)
+	
+	▶ lmstudio → agent  sse  content  ×47  (1,283 chars)     ← folded group
+	▶ lmstudio → agent  sse  reasoning  ×12  (4,521 chars)   ← folded group
+	142  14:32:07  agent → lmstudio  request  model=gpt-4...  ← standalone
+	143  14:32:07  lmstudio → agent  sse  [DONE]              ← standalone
+
+

@@ -1,0 +1,50 @@
+Python library
+scapy
+mitmproxy
+windump
+
+WinDivert 
+npcap
+Whiteshark
+
+
+== sniffer
+to debug LLM agent tool calling i need
+read packets without interfere transmission 
+on windows and linux 
+
+
+ LM studio
+http://127.0.0.1:1234/v1/completions
+
+
+currently our wrong solution is to ask user set  studio has server at http://127.0.0.1:1235  and made proxy
+
+
+agent is connected to http://127.0.0.1:1234/
+reader of packets
+studio has server at http://127.0.0.1:1234
+these are constant. we will not configure or change anything in agent or studio server . it is constant both already working
+
+
+scapy
+mitmproxy
+windump
+
+== transparent bridge 
+to debug LLM agent tool calling i need
+transparent bridge on windows py script
+
+ LM studio
+http://127.0.0.1:1234/v1/completions
+
+so it can act as proxy read packets without infare transmission
+
+currently our wrong solution is to ask user set  studio has server at http://127.0.0.1:1235  and made proxy
+
+but i want same address and transparent bridge to see json messages
+
+agent is connected to http://127.0.0.1:1234/
+bridge read packets
+studio has server at http://127.0.0.1:1234
+these are constant. we will not configure or change anything in agent or studio server . it is constant both already working on  http://127.0.0.1:1234/
